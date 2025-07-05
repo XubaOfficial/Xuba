@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jogos Educacionais – Xuba</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    #game-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 0 1rem;
+    }
+
+    .button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+    }
+
+    .button {
+    flex: 1;
+    background: #00bfa5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.45em 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4em;
+    transition: background 0.25s ease;
+    }
+
+    .button i {
+    font-size: 1.15rem;
+    }
+
+    .button:hover {
+    background: #009e8e;
+    }
+
+    /* Botão jogar abaixo de like e dislike */
+    .play-button {
+    margin-top: 0.75rem;
+    width: 100%;
+    padding: 0.6em 0;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    }
+
+    .play-button:hover {
+    background-color: #e67e22;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="display: flex; align-items: center; gap: 0.5em;">
+      <img src="xuba.png" alt="Logo Xuba" style="height: 40px;">
+      Xuba
+    </h1>
+    <div style="display: flex; align-items: center; gap: 1em;">
+      <nav>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="pdfs.html">PDFs</a></li>
+          <li><a href="videos.html">Videoaulas</a></li>
+          <li><a href="games.html">Jogos</a></li>
+          <li><a href="#" onclick="alert('Em desenvolvimento'); return false;">Ferramentas</a></li>
+        </ul>
+      </nav>
+      <div class="perfil-container">
+        <div id="perfil-btn" title="Perfil"></div>
+        <div class="perfil-menu" id="perfil-menu">
+          <div style="position: relative; display: inline-block;">
+            <img id="avatar-img" src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Avatar" style="cursor: pointer;">
+            
+            <div id="avatar-popup" style="
+              display: none;
+              position: absolute;
+              bottom: 100%;
+              left: 50%;
+              transform: translateX(-50%);
+              background: white;
+              padding: 0.5em;
+              border-radius: 8px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+              z-index: 100;
+              margin-bottom: 0.5em;
+              display: flex;
+              gap: 0.5em;
+            ">
+              <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" onclick="selecionarAvatar(this.src)" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer;">
+              <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" onclick="selecionarAvatar(this.src)" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer;">
+              <img src="https://cdn-icons-png.flaticon.com/512/2922/2922656.png" onclick="selecionarAvatar(this.src)" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer;">
+            </div>
+          </div>
+          
+          <h4>Olá, Visitante</h4>
+          <span id="pontuacao-usuario" class="pontuacao-badge">0 pts</span>
+          <input type="email" id="email" placeholder="E-mail" style="width: 100%; margin-bottom: 0.5em; padding: 0.5em; border-radius: 6px; border: 1px solid #ccc;">
+          <input type="password" id="senha" placeholder="Senha" style="width: 100%; margin-bottom: 0.5em; padding: 0.5em; border-radius: 6px; border: 1px solid #ccc;">
+          <button class="button" onclick="logar(email.value, senha.value)">Entrar</button>
+          <button class="button" onclick="cadastrar(email.value, senha.value)">Cadastrar</button>
+          <a id="dashboard-btn" href="dashboard.html" class="button" style=>Dashboard</a>
+          <button class="button" onclick="sair()">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h2>Jogos Educacionais</h2>
+
+    <input type="text" id="search-box" placeholder="Pesquisar jogos..." />
+
+    <div id="game-list" class="game-list">
+      <!-- Jogos virão aqui via games.js -->
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 20px; font-family: 'Segoe UI', sans-serif; color: #555; background-color: #f9f9f9; border-top: 1px solid #ddd;">
+    <p>Feito de estudantes, para estudantes. Nós somos acadêmicos e sabemos o que importa.</p>
+    <p>&copy; 2025 Xuba – Recursos Didáticos</p>
+    <p style="margin-top: 10px;">
+      <a href="privacy-policy.html" style="color: #00bfa5; text-decoration: none; margin-right: 15px;">Política de Privacidade</a>
+      <a href="terms-of-use.html" style="color: #00bfa5; text-decoration: none;">Termos de Uso</a>
+    </p>
+  </footer>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <!-- Scripts -->
+  <script src="auth.js"></script>
+  <script src="games.js"></script>
+
+  <script>
+    const perfilBtn = document.getElementById("perfil-btn");
+    const perfilMenu = document.getElementById("perfil-menu");
+
+    perfilBtn?.addEventListener("click", () => {
+      perfilMenu.style.display = perfilMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!perfilBtn?.contains(e.target) && !perfilMenu?.contains(e.target)) {
+        perfilMenu.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

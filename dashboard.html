@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard – Xuba</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background: #00bfa5;
+      color: white;
+      padding: 1em 2em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    main {
+      padding: 2em;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5em;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 1.5em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .card-icon {
+      font-size: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    .card strong {
+      font-size: 1.3em;
+    }
+
+    .recent-downloads {
+      margin-top: 2em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 0.8em;
+      text-align: left;
+    }
+
+    th {
+      background: #e0f2f1;
+    }
+
+    tr:nth-child(even) {
+      background: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dashboard – Xuba</h1>
+    <a href="index.html" style="color: white; text-decoration: underline;">Voltar ao site</a>
+  </header>
+
+  <main>
+    <h2>Estatísticas gerais</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">📁</div>
+        <strong id="total-pdfs">–</strong>
+        <p>Total de pdfs cadastrados</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎬</div>
+        <strong id="total-videos">–</strong>
+        <p>Total de vídeos cadastrados</p>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">⬇️</div>
+        <strong id="total-downloads">–</strong>
+        <p>Downloads totais</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👍</div>
+        <strong id="total-likes">–</strong>
+        <p>Likes totais</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👎</div>
+        <strong id="total-deslikes">–</strong>
+        <p>Deslikes totais</p>
+      </div>
+    </div>
+
+    <div class="recent-downloads">
+      <h2>Arquivos mais baixados</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Downloads</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-pdfs">
+          <!-- Será preenchido via JS -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

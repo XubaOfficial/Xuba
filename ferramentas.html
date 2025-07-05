@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Ferramentas – Xuba</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --primary-color: #00bfa5;
+      --accent-color: #a7ffeb;
+      --text-color: #333;
+      --header-bg: #00bfa5;
+      --footer-bg: #f2f2f2;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--header-bg);
+      padding: 1em;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1em;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.3em 0.6em;
+      background-color: var(--primary-color);
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: var(--accent-color);
+      color: #000;
+    }
+
+    main {
+      flex: 1;
+      padding: 2em;
+    }
+
+    main h2 {
+      color: var(--primary-color);
+      margin-bottom: 1em;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5em;
+    }
+
+    .tool-card {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 1em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .tool-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 0.5em;
+    }
+
+    .tool-card a {
+      text-decoration: none;
+      color: #00796b;
+      font-weight: bold;
+    }
+
+    footer {
+      background-color: var(--footer-bg);
+      text-align: center;
+      padding: 1em;
+      font-size: 0.9em;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Xuba</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="pdfs.html">PDFs</a></li>
+        <li><a href="videos.html">Vídeos</a></li>
+        <li><a href="ferramentas.html">Ferramentas</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Ferramentas Úteis</h2>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <h3>Calculadora Científica</h3>
+        <a href="#">Acessar</a>
+      </div>
+      <div class="tool-card">
+        <h3>Gerador de Exercícios</h3>
+        <a href="#">Acessar</a>
+      </div>
+      <div class="tool-card">
+        <h3>Visualizador de Gráficos</h3>
+        <a href="#">Acessar</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Feito de estudantes, para estudantes. Nós somos acadêmicos e sabemos o que importa.</p>
+    <p>&copy; 2025 Xuba – Recursos Didáticos</p>
+  </footer>
+</body>
+</html>

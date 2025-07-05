@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Dicas & Resumos – Xuba</title>
+  <link rel="stylesheet" href="styles.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+  <header>
+    <h1 style="display: flex; align-items: center; gap: 0.5em;">
+      <img src="xuba.png" alt="Logo Xuba" style="height: 40px;">
+      Xuba
+    </h1>
+    <div style="display: flex; align-items: center; gap: 1em;">
+      <nav>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="pdfs.html">PDFs</a></li>
+          <li><a href="videos.html">Videoaulas</a></li>
+          <li><a href="games.html">Jogos</a></li>
+          <li><a href="#" onclick="alert('Em desenvolvimento'); return false;">Ferramentas</a></li>
+        </ul>
+      </nav>
+      <div class="perfil-container">
+        <div id="perfil-btn" title="Perfil"></div>
+        <div class="perfil-menu" id="perfil-menu">
+          <div style="position: relative; display: inline-block;">
+            <img id="avatar-img" src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Avatar" style="cursor: pointer;">
+            
+            <div id="avatar-popup" style="
+              display: none;
+              position: absolute;
+              bottom: 100%;
+              left: 50%;
+              transform: translateX(-50%);
+              background: white;
+              padding: 0.5em;
+              border-radius: 8px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+              z-index: 100;
+              margin-bottom: 0.5em;
+              display: flex;
+              gap: 0.5em;
+            ">
+              <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" onclick="selecionarAvatar(this.src)" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer;">
+              <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" onclick="selecionarAvatar(this.src)" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer;">
+              <img src="https://cdn-icons-png.flaticon.com/512/2922/2922656.png" onclick="selecionarAvatar(this.src)" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer;">
+            </div>
+          </div>
+          
+          <h4>Olá, Visitante</h4>
+          <span id="pontuacao-usuario" class="pontuacao-badge">0 pts</span>
+          <input type="email" id="email" placeholder="E-mail" style="width: 100%; margin-bottom: 0.5em; padding: 0.5em; border-radius: 6px; border: 1px solid #ccc;">
+          <input type="password" id="senha" placeholder="Senha" style="width: 100%; margin-bottom: 0.5em; padding: 0.5em; border-radius: 6px; border: 1px solid #ccc;">
+          <button class="button" onclick="logar(email.value, senha.value)">Entrar</button>
+          <button class="button" onclick="cadastrar(email.value, senha.value)">Cadastrar</button>
+          <a id="dashboard-btn" href="dashboard.html" class="button" style=>Dashboard</a>
+          <button class="button" onclick="sair()">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="video-section">
+      <h2>Jogos em Destaque</h2>
+      <div class="game-track" id="game-track">
+        <!-- Jogos do Airtable via JS -->
+      </div>
+      <div class="ver-mais-link">
+        <a href="games.html">Ver todos os vídeos →</a>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h2>Vídeos em Destaque</h2>
+      <div class="video-track" id="video-track">
+        <!-- Vídeos do Airtable via JS -->
+      </div>
+      <div class="ver-mais-link">
+        <a href="videos.html">Ver todos os vídeos →</a>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <h2>PDFs em Destaque</h2>
+      <div class="video-track" id="pdf-track">
+        <!-- PDFs do Airtable via JS -->
+      </div>
+      <div class="ver-mais-link">
+        <a href="pdfs.html">Ver todos os PDFs →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #555; background-color: #f9f9f9; border-top: 1px solid #ddd;">
+    <p>Feito de estudantes, para estudantes. Nós somos acadêmicos e sabemos o que importa.</p>
+    <p>
+      &copy; 2025 Xuba – Recursos Didáticos
+    </p>
+    <p style="margin-top: 10px;">
+      <a href="privacy-policy.html" style="color: #00bfa5; text-decoration: none; margin-right: 15px;">Política de Privacidade</a>
+      <a href="terms-of-use.html" style="color: #00bfa5; text-decoration: none;">Termos de Uso</a>
+    </p>
+  </footer>
+
+  <!-- Firebase Core + Auth -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <!-- Seu auth.js -->
+  <script src="auth.js"></script>
+  <!-- Seu index-videos.js -->
+  <script src="index-pdfs-videos.js"></script>
+
+  <script>
+    const perfilBtn = document.getElementById('perfil-btn');
+    const perfilMenu = document.getElementById('perfil-menu');
+
+    perfilBtn.addEventListener('click', () => {
+      perfilMenu.style.display = perfilMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!perfilBtn.contains(e.target) && !perfilMenu.contains(e.target)) {
+        perfilMenu.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
