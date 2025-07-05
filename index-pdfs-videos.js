@@ -108,7 +108,7 @@ async function carregarJogos() {
       <img src="${URL}" alt="${NAME}" style="width: 100%; height: 128px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
       <div class="video-info">
         <strong>${NAME}</strong>
-        <button class="xuba-play-button" onclick="window.location.href='./jogos/${PAGE}'">Jogar</button>
+        <button class="xuba-play-button" onclick="window.location.href='${PAGE}'">Jogar</button>
       </div>
     `;
     container.appendChild(div);
