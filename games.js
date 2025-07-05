@@ -43,7 +43,7 @@ function renderGames(games) {
             <i class="fa fa-thumbs-down"></i> ${DESLIKE || 0}
           </button>
         </div>
-        <button class="play-button" onclick="window.location.href='./jogos/${PAGE}'">Jogar</button>
+        <button class="play-button" onclick="window.location.href='${PAGE}'">Jogar</button>
       </div>
     `;
     gameList.appendChild(gameItem);

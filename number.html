@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Adivinhe o Número – Xuba</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #00bfa5;
+      color: white;
+      padding: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    header a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 2em;
+    }
+
+    .game-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 95%;
+      margin: 40px auto;
+    }
+
+    .input-container input[type="number"] {
+      padding: 10px;
+      width: 140px;
+      font-size: 1.3rem;
+      text-align: center;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+    }
+
+    .input-container button {
+      margin-top: 15px;
+      padding: 12px 24px;
+      background: #00bfa5;
+      border: none;
+      color: white;
+      font-size: 1.1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .input-container button:hover {
+      background: #009e8c;
+    }
+
+    .feedback {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      min-height: 1.2em;
+      color: #333;
+    }
+
+    .history {
+      margin-top: 15px;
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .emoji {
+      font-size: 2rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Adivinhe o Número – Xuba</h1>
+    <a href="games.html">Voltar ao site</a>
+  </header>
+
+  <main>
+    <section class="game-container" aria-label="Adivinhação">
+      <h2>De 1 a 100</h2>
+      <div class="input-container">
+        <input type="number" id="guess" placeholder="Seu palpite" min="1" max="100" />
+        <br />
+        <button onclick="verificar()">Tentar</button>
+      </div>
+      <div id="tentativas" style="margin-top:10px; font-weight:bold; font-size:1.1rem;">
+        Tentativas: 0/10
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="emoji" id="emoji"></div>
+      <div class="history" id="history"></div>
+    </section>
+  </main>
+
+  <script>
+    const numeroSecreto = Math.floor(Math.random() * 100) + 1;
+    let tentativas = 0;
+    const maxTentativas = 10;
+    const historico = [];
+
+    function verificar() {
+      const input = document.getElementById("guess");
+      const palpite = parseInt(input.value);
+      const feedback = document.getElementById("feedback");
+      const tentativasBox = document.getElementById("tentativas");
+      const history = document.getElementById("history");
+      const emoji = document.getElementById("emoji");
+
+      if (isNaN(palpite) || palpite < 1 || palpite > 100) {
+        feedback.textContent = "Digite um número entre 1 e 100!";
+        feedback.style.color = "#f44336";
+        return;
+      }
+
+      tentativas++;
+      historico.push(palpite);
+      tentativasBox.textContent = `Tentativas: ${tentativas}/${maxTentativas}`;
+      input.value = "";
+      input.focus();
+
+      if (palpite === numeroSecreto) {
+        feedback.textContent = `🎉 Acertou! Era ${numeroSecreto}.`;
+        feedback.style.color = "#00bfa5";
+        emoji.textContent = "🎂🎈🎊";
+        input.disabled = true;
+        document.querySelector("button").disabled = true;
+      } else if (tentativas >= maxTentativas) {
+        feedback.textContent = `😢 Você perdeu! Era ${numeroSecreto}.`;
+        feedback.style.color = "#f44336";
+        emoji.textContent = "💥";
+        input.disabled = true;
+      } else if (palpite < numeroSecreto) {
+        feedback.textContent = "📈 Muito baixo!";
+        feedback.style.color = "#ff9800";
+        emoji.textContent = "⬆️";
+      } else {
+        feedback.textContent = "📉 Muito alto!";
+        feedback.style.color = "#ff9800";
+        emoji.textContent = "⬇️";
+      }
+
+      history.textContent = `Palpites: ${historico.join(", ")}`;
+    }
+  </script>
+</body>
+</html>
