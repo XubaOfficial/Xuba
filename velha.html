@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogo da Velha – Xuba</title>
+  <link rel="icon" href="xuba.png" type="image/png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #00bfa5;
+      color: white;
+      padding: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    header a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 2em;
+    }
+
+    .game-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 95%;
+      margin: 40px auto;
+    }
+
+    .mode-select, .difficulty-select {
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      margin: 0 auto 20px;
+      justify-content: center
+    }
+
+    .cell {
+      background: #fff;
+      border: 2px solid #333;
+      font-size: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+
+    .cell:hover {
+      background-color: #d1e7fd;
+    }
+
+    .cell.disabled {
+      cursor: default;
+      color: #999;
+    }
+
+    #status {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      min-height: 24px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      background: #00bfa5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #009e8c;
+    }
+
+    html {
+      overflow-y: scroll;
+      scrollbar-width: none;
+    }
+
+    html::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jogo da Velha – Xuba</h1>
+    <a href="games.html">Voltar ao site</a>
+  </header>
+
+  <main>
+    <section class="game-container">
+      <div class="mode-select">
+        <label><input type="radio" name="mode" value="2players" checked> 2 Jogadores</label>
+        <label style="margin-left:20px;"><input type="radio" name="mode" value="bot"> Jogar contra Bot</label>
+      </div>
+
+      <div class="difficulty-select" id="difficulty-select" style="display:none;">
+        <strong>Dificuldade:</strong>
+        <label><input type="radio" name="difficulty" value="easy" checked> Fácil</label>
+        <label><input type="radio" name="difficulty" value="medium"> Médio</label>
+        <label><input type="radio" name="difficulty" value="hard"> Difícil</label>
+      </div>
+
+      <div class="board" id="board"></div>
+      <div id="status">Vez do jogador X</div>
+      <button id="restart">Reiniciar jogo</button>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.getElementById('board');
+    const statusEl = document.getElementById('status');
+    const restartBtn = document.getElementById('restart');
+    const modeRadios = document.querySelectorAll('input[name="mode"]');
+    const difficultyRadios = document.querySelectorAll('input[name="difficulty"]');
+    const difficultySelect = document.getElementById('difficulty-select');
+
+    let board = Array(9).fill(null);
+    let currentPlayer = 'X';
+    let gameOver = false;
+    let playMode = '2players';
+    let difficulty = 'easy';
+
+    function createBoard() {
+      boardEl.innerHTML = '';
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.index = i;
+        cell.addEventListener('click', onCellClick);
+        boardEl.appendChild(cell);
+      }
+    }
+
+    function onCellClick(e) {
+      const idx = e.target.dataset.index;
+      if (gameOver || board[idx] !== null) return;
+
+      makeMove(idx, currentPlayer);
+      if (gameOver) return;
+
+      if (playMode === 'bot' && currentPlayer === 'O') {
+        setTimeout(botMove, 400);
+      }
+    }
+
+    function makeMove(idx, player) {
+      board[idx] = player;
+      updateBoard();
+      if (checkWin(player)) {
+        statusEl.textContent = `Jogador ${player} venceu!`;
+        gameOver = true;
+        disableBoard();
+        return;
+      }
+      if (board.every(cell => cell !== null)) {
+        statusEl.textContent = `Empate!`;
+        gameOver = true;
+        disableBoard();
+        return;
+      }
+      currentPlayer = player === 'X' ? 'O' : 'X';
+      statusEl.textContent = `Vez do jogador ${currentPlayer}`;
+    }
+
+    function updateBoard() {
+      board.forEach((val, idx) => {
+        const cell = boardEl.children[idx];
+        cell.textContent = val || '';
+        cell.classList.toggle('disabled', val !== null);
+      });
+    }
+
+    function disableBoard() {
+      Array.from(boardEl.children).forEach(cell => cell.classList.add('disabled'));
+    }
+
+    function botMove() {
+      if (gameOver) return;
+
+      let idx;
+      if (difficulty === 'easy') {
+        idx = randomMove();
+      } else if (difficulty === 'medium') {
+        idx = mediumMove();
+      } else {
+        idx = hardMove();
+      }
+
+      if (idx !== null) makeMove(idx, 'O');
+    }
+
+    function randomMove() {
+      const empty = board.map((v, i) => v === null ? i : null).filter(v => v !== null);
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
+    function mediumMove() {
+      // Verifica se pode ganhar
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === null) {
+          board[i] = 'O';
+          if (checkWin('O')) {
+            board[i] = null;
+            return i;
+          }
+          board[i] = null;
+        }
+      }
+      // Bloqueia vitória do jogador
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === null) {
+          board[i] = 'X';
+          if (checkWin('X')) {
+            board[i] = null;
+            return i;
+          }
+          board[i] = null;
+        }
+      }
+      return randomMove();
+    }
+
+    function hardMove() {
+      let bestScore = -Infinity;
+      let move = null;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === null) {
+          board[i] = 'O';
+          const score = minimax(board, 0, false);
+          board[i] = null;
+          if (score > bestScore) {
+            bestScore = score;
+            move = i;
+          }
+        }
+      }
+      return move;
+    }
+
+    function minimax(board, depth, isMaximizing) {
+      if (checkWin('O')) return 10 - depth;
+      if (checkWin('X')) return depth - 10;
+      if (board.every(cell => cell !== null)) return 0;
+
+      if (isMaximizing) {
+        let maxEval = -Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (board[i] === null) {
+            board[i] = 'O';
+            const eval = minimax(board, depth + 1, false);
+            board[i] = null;
+            maxEval = Math.max(maxEval, eval);
+          }
+        }
+        return maxEval;
+      } else {
+        let minEval = Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (board[i] === null) {
+            board[i] = 'X';
+            const eval = minimax(board, depth + 1, true);
+            board[i] = null;
+            minEval = Math.min(minEval, eval);
+          }
+        }
+        return minEval;
+      }
+    }
+
+    function checkWin(player) {
+      const wins = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return wins.some(c => c.every(i => board[i] === player));
+    }
+
+    restartBtn.addEventListener('click', () => {
+      board.fill(null);
+      currentPlayer = 'X';
+      gameOver = false;
+      statusEl.textContent = `Vez do jogador ${currentPlayer}`;
+      updateBoard();
+      enableBoard();
+    });
+
+    function enableBoard() {
+      Array.from(boardEl.children).forEach(cell => cell.classList.remove('disabled'));
+    }
+
+    modeRadios.forEach(radio => {
+      radio.addEventListener('change', e => {
+        playMode = e.target.value;
+        difficultySelect.style.display = (playMode === 'bot') ? 'block' : 'none';
+        restartBtn.click();
+      });
+    });
+
+    difficultyRadios.forEach(radio => {
+      radio.addEventListener('change', e => {
+        difficulty = e.target.value;
+        restartBtn.click();
+      });
+    });
+
+    // Inicializar
+    createBoard();
+    updateBoard();
+  </script>
+</body>
+</html>

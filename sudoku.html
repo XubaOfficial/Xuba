@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku – Xuba</title>
+  <link rel="icon" href="xuba.png" type="image/png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #00bfa5;
+      color: white;
+      padding: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    header a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 2em;
+    }
+
+    .sudoku_board {
+      width: 90%;
+      max-width: 380px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 2px;
+      background: #ccc;
+    }
+
+    .cell {
+      background: #fff;
+      width: 100%;
+      padding-top: 100%;
+      position: relative;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border: 1px solid #aaa;
+      box-sizing: border-box;
+    }
+
+    .cell span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .cell.fix {
+      background: #eee;
+      color: #777;
+    }
+
+    .cell.selected {
+      background: #3498db;
+      color: white;
+    }
+
+    .stats {
+      text-align: center;
+      margin: 1rem auto;
+    }
+
+    .console {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      z-index: 1000;
+    }
+
+    .console.show {
+     transform: translateY(0%);
+    }
+
+    .console button {
+      flex: 1 0 20%;
+      padding: 0.8rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      background: #00bfa5;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .console button:hover {
+      background: #009e8e;
+    }
+
+    .restart {
+      background: #f39c12 !important;
+    }
+
+    .restart:hover {
+      background: #e67e22 !important;
+    }
+    html {
+      overflow-y: scroll;        /* garante que o scroll funcione */
+      scrollbar-width: none;     /* Firefox */
+    }
+
+    html::-webkit-scrollbar {
+      display: none;             /* Chrome, Safari, Edge */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sudoku – Xuba</h1>
+    <a href="games.html">Voltar ao site</a>
+  </header>
+
+  <main>
+    <div class="stats">
+      <span><strong>Tempo:</strong> <span id="timer">0</span>s</span> |
+      <span><strong>Preenchidas:</strong> <span id="filled">0</span>/81</span>
+    </div>
+    <div id="board" class="sudoku_board"></div>
+    <div class="console" id="console">
+      <!-- Números 1 a 9 + botão apagar -->
+      <button onclick="setValue(1)">1</button>
+      <button onclick="setValue(2)">2</button>
+      <button onclick="setValue(3)">3</button>
+      <button onclick="setValue(4)">4</button>
+      <button onclick="setValue(5)">5</button>
+      <button onclick="setValue(6)">6</button>
+      <button onclick="setValue(7)">7</button>
+      <button onclick="setValue(8)">8</button>
+      <button onclick="setValue(9)">9</button>
+      <button onclick="setValue(0)">Apagar</button>
+      <button class="restart" onclick="startGame()">Novo Jogo</button>
+    </div>
+  </main>
+
+  <script>
+    const boardEl = document.getElementById('board');
+    const timerEl = document.getElementById('timer');
+    const filledEl = document.getElementById('filled');
+    let selectedCell = null;
+    let timer = 0;
+    let interval;
+    let board = [];
+    let fixed = [];
+
+    function generateBoard() {
+      // Simples board zerado
+      board = new Array(81).fill(0);
+      fixed = new Array(81).fill(false);
+
+      // Gera solução base usando algoritmo básico
+      const base = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      function shuffle(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      // Preencher primeira linha
+      const firstRow = shuffle([...base]);
+      for (let i = 0; i < 9; i++) {
+        board[i] = firstRow[i];
+        fixed[i] = true;
+      }
+
+      // Preencher algumas células aleatórias
+      let count = 32;
+      while (count > 0) {
+        const idx = Math.floor(Math.random() * 81);
+        if (board[idx] === 0) {
+          board[idx] = Math.floor(Math.random() * 9) + 1;
+          fixed[idx] = true;
+          count--;
+        }
+      }
+    }
+
+    function renderBoard() {
+      boardEl.innerHTML = '';
+      board.forEach((value, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        if (fixed[idx]) cell.classList.add('fix');
+        if (value) {
+          const span = document.createElement('span');
+          span.textContent = value;
+          cell.appendChild(span);
+        }
+        cell.addEventListener('click', () => {
+          if (fixed[idx]) return;
+          document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
+          cell.classList.add('selected');
+          selectedCell = idx;
+          document.getElementById('console').classList.add('show');
+        });
+        boardEl.appendChild(cell);
+      });
+      updateStats();
+    }
+
+    function setValue(val) {
+      if (selectedCell === null || fixed[selectedCell]) return;
+      board[selectedCell] = val;
+      renderBoard();
+    }
+
+    function updateStats() {
+      const filled = board.filter(v => v !== 0).length;
+      filledEl.textContent = filled;
+    }
+
+    function startGame() {
+      clearInterval(interval);
+      timer = 0;
+      timerEl.textContent = timer;
+      interval = setInterval(() => {
+        timer++;
+        timerEl.textContent = timer;
+      }, 1000);
+      generateBoard();
+      renderBoard();
+    }
+
+    startGame();
+
+    document.addEventListener('click', (e) => {
+    if (!e.target.closest('.cell') && !e.target.closest('.console')) {
+        document.getElementById('console').classList.remove('show');
+        document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
+        selectedCell = null;
+    }
+    });
+  </script>
+</body>
+</html>

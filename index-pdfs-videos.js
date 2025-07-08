@@ -51,7 +51,7 @@ async function carregarVideos() {
     url: (rec.fields.URL || "").replace("watch?v=", "embed/")
   }));
 
-  const primeiros4 = videos.slice(0, 4);
+  const primeiros4 = videos.slice(0, 8);
   const container = document.getElementById("video-track");
 
   primeiros4.forEach(video => {
@@ -96,7 +96,7 @@ async function carregarJogos() {
   const data = await response.json();
   const jogos = data.records;
 
-  const primeiros4 = jogos.slice(0, 4);
+  const primeiros4 = jogos.slice(0, 8);
   const container = document.getElementById("game-track");
 
   primeiros4.forEach((record) => {

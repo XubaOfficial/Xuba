@@ -94,6 +94,15 @@
     #restart-btn:hover {
       background: #009e8c;
     }
+
+    html {
+      overflow-y: scroll;        /* garante que o scroll funcione */
+      scrollbar-width: none;     /* Firefox */
+    }
+
+    html::-webkit-scrollbar {
+      display: none;             /* Chrome, Safari, Edge */
+    }
   </style>
 </head>
 <body>
