@@ -1,0 +1,77 @@
+<!-- Página com o jogo BSD2 e botão Voltar -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
+  <title>BSD2 Game</title>
+
+  <!-- Ícone e CSS do BSD2 -->
+  <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/yrgen73/BSD2@174be0db9145f7375365bda889a200e5cd31bbe0/icons/icon-512.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yrgen73/BSD2@174be0db9145f7375365bda889a200e5cd31bbe0/style.css" type="text/css">
+
+  <style>
+    /* Botão Voltar */
+    #back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 10000;
+        padding: 10px 16px;
+        background-color: #00bfa5;
+        color: white;
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        opacity: 0.0;
+        transition: opacity 0.3s ease-in-out;
+        font-family: Arial, sans-serif;
+    }
+
+    #back-button:hover {
+        opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Botão de Voltar -->
+  <button id="back-button" onclick="goBack()">⬅ Voltar</button>
+  <script>
+    function goBack() {
+      if (document.referrer && document.referrer !== window.location.href) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'x' || event.key === 'X') {
+        goBack();
+      }
+    });
+  </script>
+
+  <!-- Estrutura do BSD2 -->
+  <div id="fb-root"></div>
+
+  <noscript>
+    <div id="notSupportedWrap">
+      <h2 id="notSupportedTitle">Este conteúdo requer JavaScript</h2>
+      <p class="notSupportedMessage">JavaScript está desativado. Por favor, ative-o para ver este conteúdo.</p>
+      <p class="notSupportedMessage">Este jogo foi feito no Construct. <a href="https://www.construct.net/en">Crie seus próprios jogos</a></p>
+    </div>
+  </noscript>
+
+  <!-- Scripts do BSD2 -->
+  <script src="https://cdn.jsdelivr.net/gh/yrgen73/BSD2@174be0db9145f7375365bda889a200e5cd31bbe0/box2d.wasm.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/yrgen73/BSD2@6afc68a9cabdefddeac8d6897c714b752a3a8845/scripts/supportcheck.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/yrgen73/BSD2@6afc68a9cabdefddeac8d6897c714b752a3a8845/scripts/offlineclient.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/yrgen73/BSD2@6afc68a9cabdefddeac8d6897c714b752a3a8845/scripts/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/yrgen73/BSD2@6afc68a9cabdefddeac8d6897c714b752a3a8845/scripts/register-sw.js"></script>
+</body>
+</html>

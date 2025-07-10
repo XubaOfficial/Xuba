@@ -2,7 +2,6 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jogo da Velha – Xuba</title>
   <link rel="icon" href="xuba.png" type="image/png" />
   <style>
@@ -113,6 +112,18 @@
     html::-webkit-scrollbar {
       display: none;
     }
+
+    .cell.x {
+      color: #3498db;
+    }
+
+    .cell.o {
+      color: #db3437;
+    }
+
+    .cell.win {
+      background-color: #e6953f !important; /* cinza claro */
+    }
   </style>
 </head>
 <body>
@@ -181,9 +192,11 @@
     function makeMove(idx, player) {
       board[idx] = player;
       updateBoard();
-      if (checkWin(player)) {
+      const winCombo = checkWin(player);
+      if (winCombo) {
         statusEl.textContent = `Jogador ${player} venceu!`;
         gameOver = true;
+        highlightWin(winCombo);
         disableBoard();
         return;
       }
@@ -202,11 +215,20 @@
         const cell = boardEl.children[idx];
         cell.textContent = val || '';
         cell.classList.toggle('disabled', val !== null);
+        cell.classList.remove('x', 'o');
+        if (val === 'X') cell.classList.add('x');
+        if (val === 'O') cell.classList.add('o');
       });
     }
 
     function disableBoard() {
       Array.from(boardEl.children).forEach(cell => cell.classList.add('disabled'));
+    }
+
+    function highlightWin(indices) {
+      indices.forEach(i => {
+        boardEl.children[i].classList.add('win');
+      });
     }
 
     function botMove() {
@@ -308,7 +330,12 @@
         [0,3,6],[1,4,7],[2,5,8],
         [0,4,8],[2,4,6]
       ];
-      return wins.some(c => c.every(i => board[i] === player));
+      for (const combo of wins) {
+        if (combo.every(i => board[i] === player)) {
+          return combo; // retorna os índices vencedores
+        }
+      }
+      return null;
     }
 
     restartBtn.addEventListener('click', () => {
@@ -316,6 +343,7 @@
       currentPlayer = 'X';
       gameOver = false;
       statusEl.textContent = `Vez do jogador ${currentPlayer}`;
+      Array.from(boardEl.children).forEach(cell => cell.classList.remove('win'));
       updateBoard();
       enableBoard();
     });

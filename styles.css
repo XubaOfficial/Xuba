@@ -378,10 +378,17 @@ html::-webkit-scrollbar {
 
 #game-track {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-auto-flow: column; /* Faz as células virem em colunas, 1 linha */
+  grid-auto-columns: minmax(220px, 1fr); /* Largura das colunas */
   gap: 1.5rem;
-  margin-top: 2rem;
-  padding: 0 1rem;
+  overflow-x: auto;
+  padding-bottom: 1em;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+#game-track::-webkit-scrollbar {
+  display: none;
 }
 
 .xuba-play-button {

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Bounty Of One</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/TemplateData/style.css">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100%;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+
+    #back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 10000;
+        padding: 10px 16px;
+        background-color: #00bfa5;
+        color: white;
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        opacity: 0.0; /* Opacidade inicial baixa */
+        transition: opacity 0.3s ease-in-out;
+        font-family: Arial, sans-serif;
+    }
+
+    #back-button:hover {
+        opacity: 1;
+    }
+
+    #unity-footer, #unity-fullscreen-button {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="back-button" onclick="goBack()">⬅ Voltar</button>
+  <script>
+    function goBack() {
+      if (document.referrer && document.referrer !== window.location.href) {
+        window.history.back();
+      } else {
+        window.location.href = "/";
+      }
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'x' || event.key === 'X') {
+        goBack();
+      }
+    });
+  </script>
+
+  <div id="unity-container" class="unity-desktop" style="width: 100%; height: 100%;">
+    <canvas id="unity-canvas" style="width:100%; height:100%;"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+    </div>
+    <div id="unity-warning"></div>
+    <div id="unity-footer">
+      <div id="unity-webgl-logo"></div>
+      <div id="unity-build-title">BountyOfOne</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingBar = document.querySelector("#unity-loading-bar");
+    const progressBarFull = document.querySelector("#unity-progress-bar-full");
+    const warningBanner = document.querySelector("#unity-warning");
+
+    function unityShowBanner(msg, type) {
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+      }
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') div.style = 'background: red; padding: 10px;';
+      else {
+        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(function () {
+          warningBanner.removeChild(div);
+          updateBannerVisibility();
+        }, 5000);
+      }
+      updateBannerVisibility();
+    }
+
+    var buildUrl = "";
+    var loaderUrl = buildUrl + "https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.loader.js";
+    var config = {
+      dataUrl: buildUrl + "https://rawcdn.githack.com/bubbls/UGS-Assets/060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.data",
+      frameworkUrl: buildUrl + "https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.framework.js",
+      codeUrl: buildUrl + "https://rawcdn.githack.com/bubbls/UGS-Assets/060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "OptizOnion",
+      productName: "BountyOfOne",
+      productVersion: "1.03",
+      showBanner: unityShowBanner,
+    };
+
+    loadingBar.style.display = "block";
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        loadingBar.style.display = "none";
+        requestFullscreen(canvas); // entra em tela cheia automaticamente
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+
+    function requestFullscreen(element) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>
